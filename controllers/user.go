@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"AUTH_IN_GO/services"
+	"AuthInGo/services"
 	"fmt"
 	"net/http"
 )
@@ -16,8 +16,8 @@ func NewUserController(_userService services.UserService) *UserController {
 	}
 }
 
-func (uc *UserController) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("RegisterUser called in UserController")
-	uc.UserService.CreateUser()
-	w.Write([]byte("User registration endpoint"))
+func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetUserById called in UserController")
+	uc.UserService.GetUserById()
+	w.Write([]byte("User fetching endpoint done"))
 }

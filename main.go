@@ -1,8 +1,8 @@
 package main
 
 import (
-	"AUTH_IN_GO/app"
-	config "AUTH_IN_GO/config/env"
+	"AuthInGo/app"
+	config "AuthInGo/config/env"
 )
 
 func main() {
