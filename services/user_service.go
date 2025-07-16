@@ -2,6 +2,7 @@ package services
 
 import (
 	db "AuthInGo/db/repositories"
+	"AuthInGo/utils"
 	"fmt"
 )
 
@@ -11,6 +12,8 @@ type UserService interface {
 	//==========
 	// CreateUser(user *models.User) error
 	// GenerateJWT(userID int, email string) (string, error)
+	CreateUser() error
+	LoginUser() error
 }
 
 type UserServiceImpl struct {
@@ -29,4 +32,24 @@ func (u *UserServiceImpl) GetUserById() error {
 	return nil
 }
 
+func (u *UserServiceImpl) CreateUser() error {
+	fmt.Println("Creating user in UserService")
+	password := "example_password"
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		return err
+	}
+	u.userRepository.Create(
+		"username_example_1",
+		"user1@example.com",
+		hashedPassword,
+	)
+	return nil
+}
 
+func (u *UserServiceImpl) LoginUser() error {
+	// use bcrypt password from mysql======
+	response := utils.CheckPasswordHash("example_password", "$2a$10$WFL24moialK1iFd28RgEFeK7wJ3pp2TfLO95pNtV70k4FwttqYJnO")
+	fmt.Println("Login response:", response)
+	return nil
+}
