@@ -87,3 +87,9 @@ func (u *UserRepositoryImpl) GetByID() (*models.User, error) {
 
 	return user, nil
 }
+
+func (r *UserRepositoryImpl) Save(user *models.User) error {
+	// Add DB logic to insert user
+	return nil
+}
+
