@@ -2,8 +2,11 @@ package services
 
 import (
 	db "AuthInGo/db/repositories"
+	env "AuthInGo/config/env"
 	"AuthInGo/utils"
 	"fmt"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserService interface {
@@ -13,7 +16,7 @@ type UserService interface {
 	// CreateUser(user *models.User) error
 	// GenerateJWT(userID int, email string) (string, error)
 	CreateUser() error
-	LoginUser() error
+	LoginUser() (string, error)
 }
 
 type UserServiceImpl struct {
@@ -47,9 +50,51 @@ func (u *UserServiceImpl) CreateUser() error {
 	return nil
 }
 
-func (u *UserServiceImpl) LoginUser() error {
-	// use bcrypt password from mysql======
-	response := utils.CheckPasswordHash("example_password", "$2a$10$WFL24moialK1iFd28RgEFeK7wJ3pp2TfLO95pNtV70k4FwttqYJnO")
-	fmt.Println("Login response:", response)
-	return nil
+func (u *UserServiceImpl) LoginUser() (string,error) {
+		// Pre-requisite: This function will be given email and password as parameter, which we can hardcode for now
+	email := "user1@example.com"
+	password := "example_password"
+
+	// Step 1. Make a repository call to get the user by email
+	user, err := u.userRepository.GetByEmail(email)
+
+	if err != nil {
+		fmt.Println("Error fetching user by email:", err)
+		return "", err
+	}
+
+	// Step 2. If user exists, or not. If not exists, return error
+	if user == nil {
+		fmt.Println("No user found with the given email")
+		return "", fmt.Errorf("no user found with email: %s", email)
+	}
+
+	// Step 3. If user exists, check the password using utils.CheckPasswordHash
+	isPasswordValid := utils.CheckPasswordHash(password, user.Password)
+
+	if !isPasswordValid {
+		fmt.Println("Password does not match")
+		return "", nil
+	}
+
+	// Step 4. If password matches, print a JWT token, else return error saying password does not match
+	payload := jwt.MapClaims{
+		"email": user.Email,
+		"id":    user.Id,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+
+	tokenString, err := token.SignedString([]byte(env.GetString("JWT_SECRET", "TOKEN")))
+
+	if err != nil {
+		fmt.Println("Error signing token:", err)
+		return "", err
+	}
+
+	fmt.Println("JWT Token:", tokenString)
+
+	return tokenString, nil
+
+
 }

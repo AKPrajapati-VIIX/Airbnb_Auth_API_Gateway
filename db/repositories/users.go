@@ -10,6 +10,7 @@ type UserRepository interface {
 	GetByID() (*models.User, error)
 	// Create() error
 	Create(username string, email string, hashedPassword string) error
+	GetByEmail(email string) (*models.User, error)
 	GetAll() ([]*models.User, error)
 	DeleteByID(id int64) error
 }
@@ -94,3 +95,24 @@ func (r *UserRepositoryImpl) Save(user *models.User) error {
 	return nil
 }
 
+func (u *UserRepositoryImpl) GetByEmail(email string) (*models.User, error) {
+	query := "SELECT id, email, password FROM users WHERE email = ?"
+
+	row := u.db.QueryRow(query, email)
+
+	user := &models.User{}
+
+	err := row.Scan(&user.Id, &user.Email, &user.Password) // hashed password
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("No user found with the given email")
+			return nil, err
+		} else {
+			fmt.Println("Error scanning user:", err)
+			return nil, err
+		}
+	}
+
+	return user, nil
+}
