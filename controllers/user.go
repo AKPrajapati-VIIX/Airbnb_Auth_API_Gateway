@@ -34,3 +34,14 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 	uc.UserService.LoginUser()
 	w.Write([]byte("User login endpoint done"))
 }
+
+func (uc *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetAllUsers called in UserController")
+	users, err := uc.UserService.GetAllUsers()
+	if err != nil {
+		http.Error(w, "Error fetching users", http.StatusInternalServerError)
+		return
+	}
+	// Here you would typically convert users to JSON and write to response
+	fmt.Fprintf(w, "Fetched %d users successfully", len(users))
+}

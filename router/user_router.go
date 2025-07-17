@@ -20,5 +20,7 @@ func (ur *UserRouter) Register(r chi.Router) {
 	r.Get("/profile", ur.userController.GetUserById)
 	r.Post("/signup", ur.userController.CreateUser)
 	r.Post("/login", ur.userController.LoginUser)
+	// Register the route for getting all users
+	r.Get("/users", ur.userController.GetAllUsers)
 
 }

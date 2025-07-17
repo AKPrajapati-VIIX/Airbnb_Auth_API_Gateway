@@ -1,7 +1,12 @@
 package services
 
+// File: services/user_service.go
+
 import (
 	db "AuthInGo/db/repositories"
+	"AuthInGo/models"
+	// "AuthInGo/db/models"
+
 	env "AuthInGo/config/env"
 	"AuthInGo/utils"
 	"fmt"
@@ -13,14 +18,27 @@ type UserService interface {
 	GetUserById() error
 
 	//==========
-	// CreateUser(user *models.User) error
-	// GenerateJWT(userID int, email string) (string, error)
+	
 	CreateUser() error
 	LoginUser() (string, error)
+	//==========
+	GetAllUsers() ([]*models.User, error)
+	// DeleteUserById(id int64) error
+	 
 }
+
 
 type UserServiceImpl struct {
 	userRepository db.UserRepository
+}
+
+type User struct {
+	Id        int64
+	Username  string
+	Email     string
+	Password  string
+	CreatedAt string
+	UpdatedAt string
 }
 
 func NewUserService(_userRepository db.UserRepository) UserService {
@@ -96,5 +114,13 @@ func (u *UserServiceImpl) LoginUser() (string,error) {
 
 	return tokenString, nil
 
+}
 
+func (u *UserServiceImpl) GetAllUsers() ([]*models.User, error) {
+	fmt.Println("Fetching all users in UserService")
+	users, err := u.userRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
