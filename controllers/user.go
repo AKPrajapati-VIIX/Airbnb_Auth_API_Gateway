@@ -4,6 +4,7 @@ import (
 	"AuthInGo/services"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 type UserController struct {
@@ -45,3 +46,31 @@ func (uc *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	// Here you would typically convert users to JSON and write to response
 	fmt.Fprintf(w, "Fetched %d users successfully", len(users))
 }
+
+func (uc *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("DeleteUserById called in UserController")
+	// Assuming you have a way to get the user ID from the request
+	id := r.URL.Query().Get("id")
+	// Convert id to int64
+	var userID int64
+	var err error
+	if id != "" {
+		userID, err = strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid user ID", http.StatusBadRequest)
+			return
+		}
+	} else {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+	err = uc.UserService.DeleteUserById(userID)
+	
+	if err != nil {
+		http.Error(w, "Error deleting user", http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("User deletion endpoint done"))
+}
+
+

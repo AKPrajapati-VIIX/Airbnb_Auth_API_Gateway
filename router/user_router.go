@@ -22,5 +22,7 @@ func (ur *UserRouter) Register(r chi.Router) {
 	r.Post("/login", ur.userController.LoginUser)
 	// Register the route for getting all users
 	r.Get("/users", ur.userController.GetAllUsers)
+	// DELETE user 
+	r.Post("/delete", ur.userController.DeleteUserById)
 
 }

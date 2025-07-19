@@ -18,13 +18,13 @@ type UserService interface {
 	GetUserById() error
 
 	//==========
-	
+
 	CreateUser() error
 	LoginUser() (string, error)
 	//==========
 	GetAllUsers() ([]*models.User, error)
-	// DeleteUserById(id int64) error
-	 
+	DeleteUserById(id int64) error
+
 }
 
 
@@ -40,6 +40,7 @@ type User struct {
 	CreatedAt string
 	UpdatedAt string
 }
+
 
 func NewUserService(_userRepository db.UserRepository) UserService {
 	return &UserServiceImpl{
@@ -68,8 +69,8 @@ func (u *UserServiceImpl) CreateUser() error {
 	return nil
 }
 
-func (u *UserServiceImpl) LoginUser() (string,error) {
-		// Pre-requisite: This function will be given email and password as parameter, which we can hardcode for now
+func (u *UserServiceImpl) LoginUser() (string, error) {
+	// Pre-requisite: This function will be given email and password as parameter, which we can hardcode for now
 	email := "user1@example.com"
 	password := "example_password"
 
@@ -123,4 +124,14 @@ func (u *UserServiceImpl) GetAllUsers() ([]*models.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+
+func (u *UserServiceImpl) DeleteUserById(userID int64) error {
+	fmt.Println("Deleting user in UserService")
+	err := u.userRepository.DeleteUserById(userID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
