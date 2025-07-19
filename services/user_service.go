@@ -127,11 +127,16 @@ func (u *UserServiceImpl) GetAllUsers() ([]*models.User, error) {
 }
 
 
-func (u *UserServiceImpl) DeleteUserById(userID int64) error {
+// func (u *UserServiceImpl) DeleteUserById(userID int64) error {
+// 	fmt.Println("Deleting user in UserService")
+// 	err := u.userRepository.DeleteUserById(userID)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+
+func (us *UserServiceImpl) DeleteUserById(id int64) error {
 	fmt.Println("Deleting user in UserService")
-	err := u.userRepository.DeleteUserById(userID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return us.userRepository.DeleteUserById(id)
 }

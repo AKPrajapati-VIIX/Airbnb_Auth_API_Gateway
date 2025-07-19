@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"AuthInGo/services"
+	"github.com/go-chi/chi/v5"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -50,7 +51,12 @@ func (uc *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 func (uc *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("DeleteUserById called in UserController")
 	// Assuming you have a way to get the user ID from the request
-	id := r.URL.Query().Get("id")
+	// id := r.URL.Query().Get("id")
+
+	// For RESTful API, we can get the ID from the URL parameters
+	// Example: DELETE /users/{id}
+    id := chi.URLParam(r, "id") // Get {id} from the URL
+	
 	// Convert id to int64
 	var userID int64
 	var err error
@@ -72,5 +78,6 @@ func (uc *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request)
 	}
 	w.Write([]byte("User deletion endpoint done"))
 }
+
 
 

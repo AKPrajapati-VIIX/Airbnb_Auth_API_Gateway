@@ -59,6 +59,9 @@ func (u *UserRepositoryImpl) GetAll() ([]*models.User, error) {
 }
 
 
+
+// DeleteUserById deletes a user by ID from the database
+//    RESTful API: DELETE /users/{id}
 func (u *UserRepositoryImpl) DeleteUserById(id int64) error {
 	query := "DELETE FROM users WHERE id = ?"
 	result, err := u.db.Exec(query, id)
@@ -75,12 +78,14 @@ func (u *UserRepositoryImpl) DeleteUserById(id int64) error {
 		fmt.Println("No rows were affected, user not deleted")
 		return nil
 	}
-	fmt.Println("User deleted successfully, rows affected:", rowsAffected)
-	// If the user was deleted successfully, return nil
-	fmt.Println("User with ID", id, "deleted successfully")
+	fmt.Printf("User with ID %d deleted successfully. Rows affected: %d\n", id, rowsAffected)
 	return nil
 }
 
+
+
+// Create inserts a new user into the database
+// It takes username, email, and hashed password as parameters
 func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) error {
 	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 
