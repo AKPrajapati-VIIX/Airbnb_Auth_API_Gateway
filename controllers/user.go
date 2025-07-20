@@ -40,7 +40,7 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	//==============adding some validation to think more==============
 	var payload dto.LoginUserRequestDTO
-	
+
 	fmt.Println("LoginUser called in UserController")
 
 	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
@@ -64,7 +64,7 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJsonSuccessResponse(w, http.StatusOK, "User logged in successfully", jwtToken)
 
-
+	
 }
 
 func (uc *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
