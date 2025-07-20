@@ -6,6 +6,7 @@ import (
 	db "AuthInGo/db/repositories"
 	"AuthInGo/models"
 	// "AuthInGo/db/models"
+	"AuthInGo/dto"
 
 	env "AuthInGo/config/env"
 	"AuthInGo/utils"
@@ -18,9 +19,10 @@ type UserService interface {
 	GetUserById() error
 
 	//==========
+	LoginUser(payload *dto.LoginUserRequestDTO) (string, error)
 
 	CreateUser() error
-	LoginUser() (string, error)
+	// LoginUser() (string, error)
 	//==========
 	GetAllUsers() ([]*models.User, error)
 	DeleteUserById(id int64) error
@@ -69,11 +71,13 @@ func (u *UserServiceImpl) CreateUser() error {
 	return nil
 }
 
-func (u *UserServiceImpl) LoginUser() (string, error) {
+func (u *UserServiceImpl) LoginUser(payload *dto.LoginUserRequestDTO) (string, error) {
 	// Pre-requisite: This function will be given email and password as parameter, which we can hardcode for now
-	email := "user1@example.com"
-	password := "example_password"
-
+	// email := "user1@example.com"
+	// password := "example_password"
+	email := payload.Email
+	// password := payload.Password
+	password := payload.Password
 	// Step 1. Make a repository call to get the user by email
 	user, err := u.userRepository.GetByEmail(email)
 
@@ -97,12 +101,12 @@ func (u *UserServiceImpl) LoginUser() (string, error) {
 	}
 
 	// Step 4. If password matches, print a JWT token, else return error saying password does not match
-	payload := jwt.MapClaims{
+	jwtPayload := jwt.MapClaims{
 		"email": user.Email,
 		"id":    user.Id,
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtPayload)
 
 	tokenString, err := token.SignedString([]byte(env.GetString("JWT_SECRET", "TOKEN")))
 

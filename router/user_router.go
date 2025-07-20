@@ -24,7 +24,7 @@ func (ur *UserRouter) Register(r chi.Router) {
 	r.Get("/users", ur.userController.GetAllUsers)
 	// DELETE user 
 	// r.Post("/delete", ur.userController.DeleteUserById)
-	
+
 	//===========  RESTFULL API for deleting a user by ID
 	r.Get("/user/delete/{id}", ur.userController.DeleteUserById)
 
