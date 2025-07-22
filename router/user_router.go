@@ -19,6 +19,7 @@ func NewUserRouter(_userController *controllers.UserController) Router {
 
 func (ur *UserRouter) Register(r chi.Router) {
 	r.Get("/profile", ur.userController.GetUserById)
+	  
 	r.With(middlewares.UserCreateValidator).Post("/signup", ur.userController.CreateUser)
 	r.With(middlewares.UserLoginValidator).Post("/login", ur.userController.LoginUser)
 	// Register the route for getting all users

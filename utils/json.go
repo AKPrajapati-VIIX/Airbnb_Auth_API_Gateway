@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	// "errors"
-	"io"
+	
 
 	"github.com/go-playground/validator/v10"
 )
@@ -49,22 +49,22 @@ func WriteJsonErrorResponse(w http.ResponseWriter, status int, message string, e
 	return WriteJsonResponse(w, status, response)
 }
 
-// func ReadJsonBody(r *http.Request, result any) error {
-// 	decoder := json.NewDecoder(r.Body)
-// 	decoder.DisallowUnknownFields() // Prevent unknown fields from being included in the JSON body
-// 	return decoder.Decode(result)
-// }
-
 func ReadJsonBody(r *http.Request, result any) error {
 	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	err := decoder.Decode(result)
-	if err != nil {
-		if err == io.EOF {
-			return fmt.Errorf("request body is empty or malformed")
-		}
-		return fmt.Errorf("json decode error: %w", err)
-	}
-	return nil
+	decoder.DisallowUnknownFields() // Prevent unknown fields from being included in the JSON body
+	return decoder.Decode(result)
 }
+
+// func ReadJsonBody(r *http.Request, result any) error {
+// 	decoder := json.NewDecoder(r.Body)
+// 	decoder.DisallowUnknownFields()
+// 	err := decoder.Decode(result)
+// 	if err != nil {
+// 		if err == io.EOF {
+// 			return fmt.Errorf("request body is empty or malformed")
+// 		}
+// 		return fmt.Errorf("json decode error: %w", err)
+// 	}
+// 	return nil
+// }
 
