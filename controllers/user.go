@@ -31,13 +31,12 @@ func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	
 
-	var payload dto.CreateUserRequestDTO
+	fmt.Println("CreateUser called in UserController")
+
+	payload := r.Context().Value("payload").(dto.CreateUserRequestDTO) // Retrieve the payload from the context
+	
 
 	// Read and decode JSON
-	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while creating user", jsonErr)
-		return
-	}
 
 	fmt.Println("Payload received:", payload)
 
@@ -62,29 +61,22 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 
 func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println("LoginUser called in UserController")
+	fmt.Println("LoginUser called in UserController")
 	// uc.UserService.LoginUser()
 	// w.Write([]byte("User login endpoint done"))
 
 	//==============adding some validation to think more==============
 	// var payload dto.LoginUserRequestDTO
 	// Read and decode JSON
+	payload := r.Context().Value("payload").(dto.LoginUserRequestDTO)
+	
 
-	fmt.Println("LoginUser called in UserController")
+
+	fmt.Println("LoginUser called in UserController2")
 	// Assuming you have a LoginUserRequestDTO defined in your dto package
-	var payload dto.LoginUserRequestDTO
-
-	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while logging in", jsonErr)
-		return
-	}
+	
 
 	fmt.Println("Payload received:", payload)
-
-	if validationErr := utils.Validator.Struct(payload); validationErr != nil {
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Invalid input data", validationErr)
-		return
-	}
 
 	jwtToken, err := uc.UserService.LoginUser(&payload)
 

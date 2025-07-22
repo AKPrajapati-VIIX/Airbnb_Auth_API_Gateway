@@ -6,6 +6,7 @@ import (
 	"AuthInGo/utils"
 	"fmt"
 	"net/http"
+	"context"
 )
 
 func RequestValidator(next http.Handler) http.Handler {
@@ -24,7 +25,10 @@ func RequestValidator(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r) // Call the next handler in the chain
+		ctx := context.WithValue(r.Context(), "payload", payload)
+
+
+		next.ServeHTTP(w, r.WithContext(ctx)) // Call the next handler in the chain
 	})
 }
 
@@ -49,7 +53,13 @@ func UserLoginValidator(next http.Handler) http.Handler {
 
 		fmt.Println("Payload validated successfully:", payload)
 
-		next.ServeHTTP(w, r) // Call the next handler in the chain
+		
+		// Add the payload to the request context for further processing
+		ctx := context.WithValue(r.Context(), "payload", payload)
+
+		// fmt.Println("Context with payload set:", ctx)
+
+		next.ServeHTTP(w, r.WithContext(ctx)) // Call the next handler in the chain
 	})
 }
 
@@ -70,6 +80,9 @@ func UserCreateValidator(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r) // Call the next handler in the chain
+		ctx := context.WithValue(r.Context(), "payload", payload)
+
+
+		next.ServeHTTP(w, r.WithContext(ctx)) // Call the next handler in the chain
 	})
 }
