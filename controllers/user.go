@@ -27,11 +27,39 @@ func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 
+// 
 func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("CreateUser called in UserController")
-	uc.UserService.CreateUser()
-	w.Write([]byte("User creation endpoint done"))
+	
+
+	var payload dto.CreateUserRequestDTO
+
+	// Read and decode JSON
+	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
+		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while creating user", jsonErr)
+		return
+	}
+
+	fmt.Println("Payload received:", payload)
+
+	// Validate the decoded struct
+	if err := utils.Validator.Struct(payload); err != nil {
+		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Validation failed", err)
+		return
+	}
+
+	// Create the user
+	user, err := uc.UserService.CreateUser(&payload)
+	if err != nil {
+		utils.WriteJsonErrorResponse(w, http.StatusInternalServerError, "Failed to create user", err)
+		return
+	}
+
+	// Send success response
+	utils.WriteJsonSuccessResponse(w, http.StatusCreated, "User created successfully", user)
+	fmt.Println("User created successfully:", user)
 }
+
+
 
 func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("LoginUser called in UserController")
@@ -39,9 +67,12 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte("User login endpoint done"))
 
 	//==============adding some validation to think more==============
-	var payload dto.LoginUserRequestDTO
+	// var payload dto.LoginUserRequestDTO
+	// Read and decode JSON
 
 	fmt.Println("LoginUser called in UserController")
+	// Assuming you have a LoginUserRequestDTO defined in your dto package
+	var payload dto.LoginUserRequestDTO
 
 	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
 		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while logging in", jsonErr)

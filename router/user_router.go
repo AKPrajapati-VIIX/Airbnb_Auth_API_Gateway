@@ -2,6 +2,7 @@ package router
 
 import (
 	"AuthInGo/controllers"
+	"AuthInGo/middlewares"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -18,8 +19,8 @@ func NewUserRouter(_userController *controllers.UserController) Router {
 
 func (ur *UserRouter) Register(r chi.Router) {
 	r.Get("/profile", ur.userController.GetUserById)
-	r.Post("/signup", ur.userController.CreateUser)
-	r.Post("/login", ur.userController.LoginUser)
+	r.With(middlewares.UserCreateValidator).Post("/signup", ur.userController.CreateUser)
+	r.With(middlewares.UserLoginValidator).Post("/login", ur.userController.LoginUser)
 	// Register the route for getting all users
 	r.Get("/users", ur.userController.GetAllUsers)
 	// DELETE user 

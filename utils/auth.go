@@ -1,20 +1,29 @@
 package utils
 
 import (
-	"fmt"
-	"golang.org/x/crypto/bcrypt"
+    "golang.org/x/crypto/bcrypt"
 )
 
-func HashPassword(plainPassword string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
-	if err != nil {
-		fmt.Println("Error hashing password:", err)
-		return "", err
-	}
-	return string(hash), nil
+type LoginUserRequestDTO struct {
+Email    string `json:"email" validate:"required,email"`
+Password string `json:"password" validate:"required,min=8"`
 }
 
-func CheckPasswordHash(plainPassword string, hashedPassword string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
-	return err == nil
+// {"email", "password"}
+type CreateUserRequestDTO struct {
+	Username string `json:"username" validate:"required,min=3,max=20"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+}
+
+// HashPassword hashes a plain password using bcrypt.
+func HashPassword(password string) (string, error) {
+    bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+    return string(bytes), err
+}
+
+
+func CheckPasswordHash(password, hash string) bool {
+    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+    return err == nil
 }
