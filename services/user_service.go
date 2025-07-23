@@ -17,7 +17,7 @@ import (
 )
 
 type UserService interface {
-	GetUserById() error
+	GetUserById(id string) (*models.User, error)
 
 	//==========
 	LoginUser(payload *dto.LoginUserRequestDTO) (string, error)
@@ -40,7 +40,7 @@ type User struct {
 	Username  string
 	Email     string
 	Password  string
-	CreatedAt string
+	CreatedAt string 
 	UpdatedAt string
 }
 
@@ -51,10 +51,13 @@ func NewUserService(_userRepository db.UserRepository) UserService {
 	}
 }
 
-func (u *UserServiceImpl) GetUserById() error {
-	fmt.Println("Fetching user in UserService")
-	u.userRepository.GetByID()
-	return nil
+func (u *UserServiceImpl) GetUserById(id string) (*models.User, error) {
+	user, err := u.userRepository.GetByID(id)
+	if err != nil {
+		fmt.Println("Error fetching user:", err)
+		return nil, err
+	}
+	return user, nil
 }
 
 func (u *UserServiceImpl) CreateUser(payload *dto.CreateUserRequestDTO) (*models.User, error) {
@@ -85,8 +88,8 @@ func (u *UserServiceImpl) LoginUser(payload *dto.LoginUserRequestDTO) (string, e
 	// email := "user1@example.com"
 	// password := "example_password"
 	email := payload.Email 
-	// password := payload.Password
 	password := payload.Password
+	fmt.Println("Logging in user with email:", email)
 	// Step 1. Make a repository call to get the user by email
 	user, err := u.userRepository.GetByEmail(email)
 

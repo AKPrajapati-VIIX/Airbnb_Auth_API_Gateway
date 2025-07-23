@@ -7,7 +7,8 @@ import (
 )
 
 type UserRepository interface {
-	GetByID() (*models.User, error)
+	GetByID(id string) (*models.User, error)
+
 	// Create() error
 	Create(username string, email string, hashedPassword string) (*models.User, error) //error
 	GetByEmail(email string) (*models.User, error)
@@ -116,14 +117,14 @@ func (u *UserRepositoryImpl) Create(username string, email string, hashedPasswor
 	return user, nil
 }
 
-func (u *UserRepositoryImpl) GetByID() (*models.User, error) {
-	fmt.Println("Getching user in UserRepository")
+func (u *UserRepositoryImpl) GetByID( id string) (*models.User, error) {
+	fmt.Println("Fetching user in UserRepository")
 
 	// Step 1: Prepare the query
 	query := "SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?"
 
 	// Step 2: Execute the query
-	row := u.db.QueryRow(query, 1)
+	row := u.db.QueryRow(query, id)
 
 	// Step 3: Process the result
 	user := &models.User{}

@@ -2,7 +2,7 @@ package router
 
 import (
 	"AuthInGo/controllers"
-	"AuthInGo/middlewares"
+	// "AuthInGo/middlewares"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -24,7 +24,7 @@ func SetupRouter(UserRouter Router) *chi.Mux {
 	// chiRouter.Use(middlewares.UserCreateValidator) // Middleware for validating requests
 	// chiRouter.Use(middlewares.UserLoginValidator)  // Middleware for validating login requests
 	// chiRouter.Use(middleware.Recoverer) // Recover from panics
-	chiRouter.Use(middlewares.RateLimiterMiddleware) // Recover from panics
+	// chiRouter.Use(middlewares.RateLimiterMiddleware) // Recover from panics
 
 	chiRouter.Get("/ping", controllers.PingHandler)
 
