@@ -29,7 +29,7 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 		if token == "" {
 			http.Error(w, "Token is required", http.StatusUnauthorized)
 			return
-		}
+		} 
 
 		claims := jwt.MapClaims{}
 
