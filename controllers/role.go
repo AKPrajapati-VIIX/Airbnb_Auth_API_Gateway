@@ -56,3 +56,4 @@ func (rc *RoleController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJsonSuccessResponse(w, http.StatusOK, "Roles fetched successfully", roles)
 }
+
